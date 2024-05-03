@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,10 +10,31 @@
 <body class="bg-light">
     <div class="container py-4">
         <h1 class="text-center mb-4">Applications Tracking System</h1>
+         {% if messages %}
+    {% for message in messages %}
+        {% if message.tags %}
+            {% if "success" in message.tags %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% elif "error" in message.tags %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {% elif "warning" in message.tags %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {% else %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {% endif %}
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
         <button id="addApplicationBtn" class="btn btn-primary mb-4">Add New Application</button>
         <div id="addApplicationModal" class="modal" tabindex="-1" role="dialog">
             <!-- Modal content for adding new job application -->
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <form id="addApplicationForm" action="{% url 'index' %}" method="post">
                         {% csrf_token %}
@@ -68,16 +88,13 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Add Application</button>
+                            <button type="submit" class="btn btn-success">Add Application</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <!-- Newsletter Subscription Form -->
-       
 
         <!-- Display existing job applications -->
         <div class="table-responsive">
@@ -119,7 +136,7 @@
                         </td>
                         <td>{{ application.medium }}</td>
                         <td>
-                            <a href="{{ application.link }}" class="btn btn-primary" target="_blank">Apply</a>
+                            <a href="{{ application.link }}" class="btn btn-success" target="_blank">Apply</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -139,9 +156,10 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="email" name="email" id="email" class="form-control" required>
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email to get notified for all new Job updates" required>
+                        
                         </div>
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                        <button type="submit" class="btn btn-info">Subscribe</button>
                     </form>
                 </div>
             </div>

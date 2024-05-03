@@ -3,6 +3,8 @@ from jobs.models import JobApplication, EmailSubscription
 from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
 
 def index(request):
     if request.method == 'POST':
@@ -34,33 +36,26 @@ def index(request):
         return render(request, 'index.html', {'applications': applications})
 
 
+
+
 def subscribe_newsletter(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        EmailSubscription.objects.create(email=email)
-        send_confirmation_email(email)
-        return JsonResponse({'success': True})
+        if EmailSubscription.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists')
+        else:
+            EmailSubscription.objects.create(email=email)
+            send_confirmation_email(email)
+            messages.success(request, 'Email added to subscriber list')
     else:
-        return JsonResponse({'success': False})
-    
-    
-# def send_newsletter_to_subscribers():
-#     print("Sending newsletter to subscribers")
-#     subject = 'New Job Application Added!'
-#     message = 'A new job application has been added. Check it out!'
-#     from_email = settings.EMAIL_HOST_USER
-#     email_subscriptions_count = EmailSubscription.objects.count()
-#     for i in range(email_subscriptions_count):
-#         recipient_list = [EmailSubscription.objects.all()[i].email]
-#         print(send_mail(subject, message, from_email, recipient_list, fail_silently=True))
-#     return redirect('index')
-
+        messages.error(request, 'Unable to add')
+    return redirect('index')
 
 from django.template.loader import render_to_string
 
 def send_newsletter_to_subscribers():
     print("Sending newsletter to subscribers")
-    subject = 'New Job Application Added!'
+    subject = 'ATS Alerts: New Job Application Added!'
     from_email = settings.EMAIL_HOST_USER
     applications = JobApplication.objects.all()
 
@@ -80,7 +75,7 @@ def send_newsletter_to_subscribers():
 
 def send_confirmation_email(email):
     subject = 'Subscription Confirmation'
-    message = 'Thank you for subscribing to our newsletter!'
+    message = 'Thank you for subscribing to our newsletter! Visit our site here: https://application-tracking-system-zf8k.onrender.com/'
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, from_email, recipient_list, fail_silently=True)
