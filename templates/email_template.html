@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Job Application Added!</title>
+    <style>
+        /* Reset default margin and padding */
+        body, h2, p, table {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Set font styles */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        /* Table header */
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Table body */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>New Job Application Added!</h2>
+        <p>Check out the latest job applications:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Deadline</th>
+                    <!-- <th>Status</th> -->
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.company }}</td>
+                    <td>{{ application.role }}</td>
+                    <td>{{ application.deadline }}</td>
+                    <!-- <td>{{ application.status }}</td> -->
+                    <td><a href="{{ application.link }}" target="_blank">Apply</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

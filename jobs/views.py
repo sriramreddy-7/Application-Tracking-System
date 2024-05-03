@@ -30,6 +30,7 @@ def index(request):
         return redirect('index')
     else:
         applications = JobApplication.objects.all()
+        send_newsletter_to_subscribers()
         return render(request, 'index.html', {'applications': applications})
 
 
@@ -43,16 +44,38 @@ def subscribe_newsletter(request):
         return JsonResponse({'success': False})
     
     
+# def send_newsletter_to_subscribers():
+#     print("Sending newsletter to subscribers")
+#     subject = 'New Job Application Added!'
+#     message = 'A new job application has been added. Check it out!'
+#     from_email = settings.EMAIL_HOST_USER
+#     email_subscriptions_count = EmailSubscription.objects.count()
+#     for i in range(email_subscriptions_count):
+#         recipient_list = [EmailSubscription.objects.all()[i].email]
+#         print(send_mail(subject, message, from_email, recipient_list, fail_silently=True))
+#     return redirect('index')
+
+
+from django.template.loader import render_to_string
+
 def send_newsletter_to_subscribers():
     print("Sending newsletter to subscribers")
     subject = 'New Job Application Added!'
-    message = 'A new job application has been added. Check it out!'
     from_email = settings.EMAIL_HOST_USER
-    email_subscriptions_count = EmailSubscription.objects.count()
-    for i in range(email_subscriptions_count):
-        recipient_list = [EmailSubscription.objects.all()[i].email]
-        print(send_mail(subject, message, from_email, recipient_list, fail_silently=True))
+    applications = JobApplication.objects.all()
+
+    # Prepare the HTML content for the email
+    html_content = render_to_string('email_template.html', {'applications': applications})
+
+    # Get the list of subscribers' emails
+    subscribers_emails = EmailSubscription.objects.values_list('email', flat=True)
+
+    # Send email to each subscriber
+    for email in subscribers_emails:
+        send_mail(subject, '', from_email, [email], html_message=html_content, fail_silently=True)
+
     return redirect('index')
+
 
 
 def send_confirmation_email(email):
