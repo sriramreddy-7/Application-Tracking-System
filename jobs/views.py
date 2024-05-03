@@ -30,7 +30,7 @@ def index(request):
         return redirect('index')
     else:
         applications = JobApplication.objects.all()
-        send_newsletter_to_subscribers()
+        # send_newsletter_to_subscribers()
         return render(request, 'index.html', {'applications': applications})
 
 
