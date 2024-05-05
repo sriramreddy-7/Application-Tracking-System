@@ -5,7 +5,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
+
+# @login_required
 def index(request):
     if request.method == 'POST':
         company = request.POST.get('company')
@@ -32,10 +36,22 @@ def index(request):
         return redirect('index')
     else:
         applications = JobApplication.objects.all()
-        # send_newsletter_to_subscribers()
         return render(request, 'index.html', {'applications': applications})
 
 
+def navbar(request):
+    return render(request, 'navbar.html')
+
+
+@login_required
+def home(request):
+    applications = JobApplication.objects.all()
+    return render(request, 'home.html',{'applications': applications})
+
+@login_required
+def my_applications(request):
+    applications = JobApplication.objects.all()
+    return render(request,'my_applications.html',{'applications': applications})
 
 
 def subscribe_newsletter(request):

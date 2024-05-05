@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 # Create your models here.
 class JobApplication(models.Model):
     s_no = models.AutoField(primary_key=True)
@@ -10,7 +10,7 @@ class JobApplication(models.Model):
     link = models.URLField(max_length=200,blank=True)
     remarks = models.TextField(blank=True)
     medium = models.CharField(max_length=50,blank=True)
-
+    posted_on = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.company
     

@@ -1,181 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Applications</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body class="bg-light">
-    <div class="container py-4">
-        <h1 class="text-center mb-4">Applications Tracking System</h1>
-         {% if messages %}
-    {% for message in messages %}
-        {% if message.tags %}
-            {% if "success" in message.tags %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {% elif "error" in message.tags %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {% elif "warning" in message.tags %}
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {% else %}
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-            {% endif %}
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
-        <button id="addApplicationBtn" class="btn btn-primary mb-4">Add New Application</button>
-        <div id="addApplicationModal" class="modal" tabindex="-1" role="dialog">
-            <!-- Modal content for adding new job application -->
-            <div class="modal-dialog modal-xl" role="document">
-                <div class="modal-content">
-                    <form id="addApplicationForm" action="{% url 'index' %}" method="post">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New Job Application</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <input type="text" name="role" id="role" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="company">Company</label>
-                                <input type="text" name="company" id="company" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" required>
-                                    <option value="">Select Status</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="awaiting">Awaiting</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="deadline">Deadline</label>
-                                <input type="datetime-local" name="deadline" id="deadline" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="link">Link</label>
-                                <input type="url" name="link" id="link" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="remarks">Remarks</label>
-                                <textarea name="remarks" id="remarks" rows="3" class="form-control"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="medium">Medium</label>
-                                <select name="medium" id="medium" class="form-control" required>
-                                    <option value="">Select Medium</option>
-                                    <option value="unstop">Unstop</option>
-                                    <option value="Glassdoor">Glassdoor</option>
-                                    <option value="linkedin">LinkedIn</option>
-                                    <option value="google">Google</option>
-                                    <option value="Own Website">Own Website</option>
-                                    <!-- Add other options here -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Add Application</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+{% extends 'navbar.html' %}
+{% load static %}
+    {% block content %}
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Discover Your Dream Job</h1>
+          <p>
+            Take control of your career with JobTracker. Explore thousands of
+            job opportunities, track your applications, and get expert resume
+            tips.
+          </p>
+          <a href="#features" class="btn btn-primary btn-lg"
+            >Explore Features</a
+          >
         </div>
+      </div>
+    </section>
 
-        <!-- Display existing job applications -->
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>S.no</th>
-                        <th>Role</th>
-                        <th>Company</th>
-                        <th>Status</th>
-                        <th>Deadline</th>
-                        <th>Remarks</th>
-                        <th>Medium</th>
-                        <th>Link</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for application in applications %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{ application.role }}</td>
-                        <td>{{ application.company }}</td>
-                        <td>
-                            {% if application.status == 'ongoing' %}
-                                <span class="badge badge-primary">Ongoing</span>
-                            {% elif application.status == 'closed' %}
-                                <span class="badge badge-success">Closed</span>
-                            {% else %}
-                                <span class="badge badge-warning">Awaiting</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ application.deadline }}</td>
-                        <td>
-                            {% if application.remarks %}
-                                {{ application.remarks }}
-                            {% else %}
-                                None
-                            {% endif %}
-                        </td>
-                        <td>{{ application.medium }}</td>
-                        <td>
-                            <a href="{{ application.link }}" class="btn btn-success" target="_blank">Apply</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-       
-    </div>
-      <footer class="footer mt-auto py-3 bg-light">
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    Subscribe to Newsletter
-                </div>
-                <div class="card-body">
-                    <form id="newsletterForm" action="{% url 'subscribe_newsletter' %}" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email to get notified for all new Job updates" required>
-                        
-                        </div>
-                        <button type="submit" class="btn btn-info">Subscribe</button>
-                    </form>
-                </div>
+    <!-- Features section -->
+    <section id="features" class="feature-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="feature-item">
+              <i class="fas fa-search"></i>
+              <h3>Job Search</h3>
+              <p>
+                Find your next career move from a vast collection of job
+                listings.
+              </p>
             </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <i class="fas fa-chart-line"></i>
+              <h3>Application Tracking</h3>
+              <p>Keep track of all your job applications and their statuses.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-item">
+              <i class="fas fa-file-alt"></i>
+              <h3>Resume Tips</h3>
+              <p>Get expert tips and tricks to craft a winning resume.</p>
+            </div>
+          </div>
         </div>
-    </footer>
+      </div>
+    </section>
+{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Function to show the modal form for adding new application
-        $(document).ready(function(){
-            $('#addApplicationBtn').on('click', function() {
-                $('#addApplicationModal').modal('show');
-            });
-        });
-    </script>
-</body>
-</html>
