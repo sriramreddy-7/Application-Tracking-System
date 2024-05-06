@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from jobs.models import JobApplication, EmailSubscription
+from jobs.models import JobApplication, EmailSubscription, UserJobApplication
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
@@ -144,3 +144,40 @@ def send_confirmation_email(email):
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+    
+    
+    
+def job_application_tracker(request):
+    user_job_applications = UserJobApplication.objects.filter(user=request.user)
+    jobs = JobApplication.objects.all()
+    return render(request, 'job_application_tracker.html', {'user_job_applications': user_job_applications, 'jobs': jobs})
+
+def add_job_application(request):
+    if request.method == 'POST':
+        user = request.user
+        job_id = request.POST.get('job')
+        job_application = JobApplication.objects.get(pk=job_id)
+        application_date = request.POST.get('application_date')
+        status = request.POST.get('status')
+        notes = request.POST.get('notes')
+
+        UserJobApplication.objects.create(user=user, job_application=job_application, application_date=application_date, status=status, notes=notes)
+        return redirect('job_application_tracker')
+    else:
+        jobs = JobApplication.objects.all()
+        return render(request, 'job_application_tracker.html', {'jobs': jobs})
+
+def edit_job_application(request, user_job_application_id):
+    user_job_application = UserJobApplication.objects.get(id=user_job_application_id)
+    if request.method == 'POST':
+        user_job_application.status = request.POST.get('status')
+        user_job_application.notes = request.POST.get('notes')
+        user_job_application.save()
+        return redirect('job_application_tracker')
+    else:
+        return render(request, 'edit_job_application.html', {'user_job_application': user_job_application})
+
+def delete_job_application(request, user_job_application_id):
+    user_job_application = UserJobApplication.objects.get(id=user_job_application_id)
+    user_job_application.delete()
+    return redirect('job_application_tracker')

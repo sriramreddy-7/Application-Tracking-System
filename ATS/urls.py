@@ -36,4 +36,13 @@ urlpatterns = [
     path("signup/", views.signup, name="signup"),
     path("logout/", views.logout_view, name="logout"),
     path('accounts/login/', views.login_view, name='login'),
+    
+    #user urls
+  
+    path('job-application-tracker', views.job_application_tracker, name='job_application_tracker'),
+    path('add-job-application', views.add_job_application, name='add_job_application'),
+    path('edit-job-application/<int:user_job_application_id>/', views.edit_job_application, name='edit_job_application'),
+    path('delete-job-application/<int:user_job_application_id>/', views.delete_job_application, name='delete_job_application'),
 ]
+    
+

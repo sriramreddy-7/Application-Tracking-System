@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Job Application Tracker - JobHub{% endblock %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">Job Application Tracker</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Role</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_job_application in user_job_applications %}
+                    <tr>
+                        <td>{{ user_job_application.job_application.company }}</td>
+                        <td>{{ user_job_application.job_application.role }}</td>
+                        <td>{{ user_job_application.job_application.deadline }}</td>
+                        <td>{{ user_job_application.status }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="openEditModal({{ user_job_application.id }})">Edit</button>
+                            <a href="{% url 'delete_job_application' user_job_application.id %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No job applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addJobApplicationModal">Add Job Application</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Job Application Modal -->
+<div class="modal fade" id="addJobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="addJobApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addJobApplicationModalLabel">Add Job Application</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+    <form method="post" action="{% url 'add_job_application' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="job">Job</label>
+            <select class="form-control" id="job" name="job" required>
+                {% for job in jobs %}
+                    <option value="{{ job.pk }}">{{ job.company }} - {{ job.role }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="application_date">Application Date</label>
+            <input type="datetime-local" class="form-control" id="application_date" name="application_date" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <input type="text" class="form-control" id="status" name="status" required>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openEditModal(id) {
+        // Implement as needed
+    }
+</script>
+
+{% include 'footer.html' %}
+{% endblock %}
