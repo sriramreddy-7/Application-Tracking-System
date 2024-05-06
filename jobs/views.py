@@ -1,15 +1,21 @@
 from django.shortcuts import render, redirect
 from jobs.models import JobApplication, EmailSubscription
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
-# @login_required
+def test(request):
+    job_applications = JobApplication.objects.all()
+    return render(request, 'index.html', {'job_applications': job_applications})
+
 def index(request):
     if request.method == 'POST':
         company = request.POST.get('company')
@@ -29,29 +35,72 @@ def index(request):
             remarks=remarks,
             medium=medium
         )
-
-        # Send email to subscribed users
         send_newsletter_to_subscribers()
 
         return redirect('index')
     else:
-        applications = JobApplication.objects.all()
-        return render(request, 'index.html', {'applications': applications})
+        job_applications = JobApplication.objects.all()
+        return render(request, 'index.html', {'job_applications': job_applications})
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You have successfully logged in.")
+            return redirect('index') 
+        else:
+            messages.error(request, "Invalid username or password.")
+            return render(request, 'auth/login.html')
 
-def navbar(request):
-    return render(request, 'navbar.html')
+    return render(request, 'auth/login.html')
 
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 != password2:
+            messages.error(request, "Passwords do not match")
+            return render(request, 'auth/signup.html')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username is already taken")
+            return render(request, 'auth/signup.html')
+        
+        user = User.objects.create_user(username=username, email=email, password=password1)
+        login(request, user)
+        
+        messages.success(request, "You have successfully signed up!")
+        return redirect('index') 
 
-@login_required
-def home(request):
-    applications = JobApplication.objects.all()
-    return render(request, 'home.html',{'applications': applications})
+    return render(request, 'auth/signup.html')
+
+def logout_view(request):
+    logout(request)
+    # Redirect to a specific URL after logout
+    response = redirect('index')  # Replace 'home' with the URL name of your home page
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # HTTP 1.1
+    response['Pragma'] = 'no-cache'  # HTTP 1.0
+    response['Expires'] = '0'  # Proxies
+    return response
+    # return redirect('index')
+
 
 @login_required
 def my_applications(request):
     applications = JobApplication.objects.all()
     return render(request,'my_applications.html',{'applications': applications})
+
+
+@login_required
+def resume_tips(request):
+    return render(request,'resume_tips.html')
+
 
 
 def subscribe_newsletter(request):

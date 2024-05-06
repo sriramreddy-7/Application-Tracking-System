@@ -22,10 +22,18 @@ from jobs import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("accounts/", include("accounts.urls", namespace="accounts")),
     path('', views.index, name='index'),
     path('subscribe-newsletter/', views.subscribe_newsletter, name='subscribe_newsletter'),
-    path('navbar/', views.navbar, name='navbar'),
-    path("home/", views.home, name="home"),
+    # path('navbar/', views.navbar, name='navbar'),
+    # path("home/", views.home, name="home"),
     path("my_applications",views.my_applications,name="my_applications"),
+    path("resume_tips",views.resume_tips,name="resume_tips"),
+    path("test",views.test,name="test"),
+    
+    
+    #auth urls\
+    path("login/", views.login_view, name="login"),
+    path("signup/", views.signup, name="signup"),
+    path("logout/", views.logout_view, name="logout"),
+    path('accounts/login/', views.login_view, name='login'),
 ]

@@ -1,307 +1,50 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JobTracker - Your Career Companion</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Font Awesome CSS -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-      rel="stylesheet"
-    />
-
-    <style>
-      .navbar {
-        background-color: #343a40;
-      }
-      .navbar-brand {
-        font-weight: bold;
-        color: #ffffff;
-      }
-      .navbar-brand:hover {
-        color: #ffffff; /* White text color on hover */
-      }
-      .navbar-nav .nav-link {
-        color: #ffffff; /* White text color */
-      }
-      .navbar-nav .nav-link:hover {
-        color: #ffffff; /* White text color on hover */
-      }
-      /* Hero section */
-      .hero-section {
-        background-image: url("{% static 'assets/imgs/banner1.png' %}");
-        background-size: cover;
-        background-position: center;
-        color: #ffffff; /* White text color */
-        text-align: center;
-        padding: 100px 0;
-      }
-      .hero-content {
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      .hero-content h1 {
-        font-size: 3.5rem;
-        margin-bottom: 20px;
-      }
-      .hero-content p {
-        font-size: 1.2rem;
-        margin-bottom: 40px;
-      }
-      /* Button styles */
-
-      .btn-primary:hover {
-        background-color: #0056b3; /* Darker shade on hover */
-      }
-      /* Feature section */
-      .feature-section {
-        padding: 100px 0;
-        background-color: #f8f9fa; /* Light background color */
-      }
-      .feature-item {
-        text-align: center;
-        margin-bottom: 50px;
-      }
-      .feature-item i {
-        font-size: 3rem;
-        margin-bottom: 20px;
-        color: #007bff; /* Primary color */
-      }
-      .feature-item h3 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-      }
-      .feature-item p {
-        font-size: 1.2rem;
-      }
-      /* Footer section */
-      .footer {
-        background-color: #343a40; /* Dark background color */
-        color: #ffffff; /* White text color */
-        text-align: center;
-        padding: 30px 0;
-      }
-    </style>
-  </head>
-  <body>
-    {% if user.is_authenticated %}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'index' %}">JobTracker</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">JobHub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-             <li class="nav-item">
-              <a class="nav-link" href="{% url 'my_applications' %}"
-                ><i class=""></i> My Applications</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:logout' %}"
-                ><i class="fas fa-sign-in-alt"></i> Logout</a
-              >
-            </li>
-           
-            <!-- <li class="nav-item">
-              <a
-                class="nav-link"
-                href="#"
-                data-toggle="modal"
-                data-target="#registerModal"
-                ><i class="fas fa-user-plus"></i> Logout</a
-              >
-            </li> -->
-          </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+               
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'resume_tips' %}">Resume Tips</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a> 
+                </li>
+            </ul>
         </div>
-      </div>
-    </nav>
-    {% else %}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'index' %}">JobTracker</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
+    </div>
+</nav>
+{% else %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">JobHub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="#"
-                data-toggle="modal"
-                data-target="#loginModal"
-                ><i class="fas fa-sign-in-alt"></i> Login</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="#"
-                data-toggle="modal"
-                data-target="#registerModal"
-                ><i class="fas fa-user-plus"></i> Register</a
-              >
-            </li>
-          </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'resume_tips' %}">Resume Tips</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+            </ul>
         </div>
-      </div>
-    </nav>
-    {% endif %}
-
-    <div id="loginModal" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Login</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="{% url 'accounts:login_user' %}" method="POST">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="loginEmail">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="loginEmail"
-                  name="loginEmail"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="loginPassword"
-                  name="loginPassword"
-                  placeholder="Password"
-                  required
-                />
-              </div>
-              <center>
-                <button type="submit" class="btn btn-primary">Login</button>
-              </center>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <div id="registerModal" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Register</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="{% url 'accounts:register' %}" method="POST">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Enter your first name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Enter your last name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="email">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                />
-              </div>
-              <center>
-                <button type="submit" class="btn btn-primary">Register</button>
-              </center>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <main class="main">{% block content %} {% endblock %}</main>
-    <footer class="footer">
-      <div class="container">
-        <p>&copy; 2022 JobTracker. All rights reserved.</p>
-      </div>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Font Awesome JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-  </body>
-</html>
+</nav>
+{% endif %}
