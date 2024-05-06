@@ -139,3 +139,5 @@ EMAIL_TIMEOUT = None
 # STATICFILES_STORAGE='django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+SESSION_COOKIE_AGE = 20 * 60  

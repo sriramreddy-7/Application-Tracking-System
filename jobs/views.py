@@ -59,7 +59,7 @@ def login_view(request):
 
 def signup(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        # username = request.POST.get('username')
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
@@ -68,11 +68,11 @@ def signup(request):
             messages.error(request, "Passwords do not match")
             return render(request, 'auth/signup.html')
         
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(email=email).exists():
             messages.error(request, "Username is already taken")
             return render(request, 'auth/signup.html')
         
-        user = User.objects.create_user(username=username, email=email, password=password1)
+        user = User.objects.create_user(username=email, email=email, password=password1)
         login(request, user)
         
         messages.success(request, "You have successfully signed up!")
