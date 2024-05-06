@@ -24,7 +24,131 @@
     </div>
   </div>
 </div>
-
+{% if user.is_authenticated and user.is_superuser %}
+<div class="container mt-5">
+    <button id="addApplicationBtn" class="btn btn-primary mb-4" data-toggle="modal" data-target="#addApplicationModal">
+        Add New Application
+    </button>
+    <div id="addApplicationModal" class="modal" tabindex="-1" role="dialog">
+          <!-- Modal content for adding new job application -->
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <form
+                id="addApplicationForm"
+                action="{% url 'index' %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title">Add New Job Application</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="role">Role</label>
+                    <input
+                      type="text"
+                      name="role"
+                      id="role"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="company">Company</label>
+                    <input
+                      type="text"
+                      name="company"
+                      id="company"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select
+                      name="status"
+                      id="status"
+                      class="form-control"
+                      required
+                    >
+                      <option value="">Select Status</option>
+                      <option value="ongoing">Ongoing</option>
+                      <option value="closed">Closed</option>
+                      <option value="awaiting">Awaiting</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input
+                      type="datetime-local"
+                      name="deadline"
+                      id="deadline"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="link">Link</label>
+                    <input
+                      type="url"
+                      name="link"
+                      id="link"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea
+                      name="remarks"
+                      id="remarks"
+                      rows="3"
+                      class="form-control"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="medium">Medium</label>
+                    <select
+                      name="medium"
+                      id="medium"
+                      class="form-control"
+                      required
+                    >
+                      <option value="">Select Medium</option>
+                      <option value="Unstop">Unstop</option>
+                      <option value="Glassdoor">Glassdoor</option>
+                      <option value="Linkedin">LinkedIn</option>
+                      <option value="Google">Google</option>
+                      <option value="Own Website">Own Website</option>
+                      <!-- Add other options here -->
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">
+                    Add Application
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        </div>
+{% endif %}
 <div class="container mt-5">
     <div class="row">
         {% for job_application in job_applications %}
