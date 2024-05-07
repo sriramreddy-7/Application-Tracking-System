@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from jobs.models import JobApplication, EmailSubscription, UserJobApplication
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
@@ -181,3 +181,65 @@ def delete_job_application(request, user_job_application_id):
     user_job_application = UserJobApplication.objects.get(id=user_job_application_id)
     user_job_application.delete()
     return redirect('job_application_tracker')
+
+
+
+@login_required
+def posts(request):
+    applications = JobApplication.objects.all()  # Fetch all posts or apply appropriate filtering
+    return render(request, 'post.html', {'applications': applications})
+
+# def job_applications(request):
+#     # Fetch all job applications
+#     applications = JobApplication.objects.all()
+#     return render(request, 'job_applications.html', {'applications': applications})
+
+def add_application(request):
+    if request.method == 'POST':
+        # Retrieve form data
+        company = request.POST.get('company')
+        role = request.POST.get('role')
+        deadline = request.POST.get('deadline')
+        status = request.POST.get('status')
+        link = request.POST.get('link')
+        remarks = request.POST.get('remarks')
+        medium = request.POST.get('medium')
+        # posted_on = request.POST.get('posted_on')
+
+        # Create new job application
+        new_application = JobApplication(
+            company=company,
+            role=role,
+            deadline=deadline,
+            status=status,
+            link=link,
+            remarks=remarks,
+            medium=medium,
+            # posted_on=posted_on
+        )
+        new_application.save()
+        return redirect('posts')
+
+def edit_application(request, application_id):
+    application = get_object_or_404(JobApplication, pk=application_id)
+    if request.method == 'POST':
+        # Retrieve form data
+        application.company = request.POST.get('company')
+        application.role = request.POST.get('role')
+        application.deadline = request.POST.get('deadline')
+        application.status = request.POST.get('status')
+        application.link = request.POST.get('link')
+        application.remarks = request.POST.get('remarks')
+        application.medium = request.POST.get('medium')
+        # application.posted_on = request.POST.get('posted_on')
+
+        # Save the updated job application
+        application.save()
+        return redirect('posts')
+
+def delete_application(request, application_id):
+    application = get_object_or_404(JobApplication, pk=application_id)
+    if request.method == 'POST':
+        # Delete the job application
+        application.delete()
+        return redirect('posts')

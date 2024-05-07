@@ -29,6 +29,10 @@ urlpatterns = [
     path("my_applications",views.my_applications,name="my_applications"),
     path("resume_tips",views.resume_tips,name="resume_tips"),
     path("test",views.test,name="test"),
+    path('posts/', views.posts, name='posts'),
+    path('add/', views.add_application, name='add_application'),
+    path('edit/<int:application_id>/', views.edit_application, name='edit_application'),
+    path('delete/<int:application_id>/', views.delete_application, name='delete_application'),
     
     
     #auth urls\

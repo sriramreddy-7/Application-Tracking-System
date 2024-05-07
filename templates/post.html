@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}JobHub - Find Your Dream Job{% endblock %} 
+{% block content %}
+{% include 'navbar.html' %}
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+  <br>
+  &nbsp;
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+    Add Application
+  </button>
+ 
+  <br>
+  &nbsp;
+
+  <!-- Modal for adding new application -->
+  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addModalLabel">Add New Application</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'add_application' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="company">Company:</label>
+              <input type="text" class="form-control" id="company" name="company">
+            </div>
+            <div class="form-group">
+              <label for="role">Role:</label>
+              <input type="text" class="form-control" id="role" name="role">
+            </div>
+            <div class="form-group">
+              <label for="deadline">Deadline:</label>
+              <input type="date" class="form-control" id="deadline" name="deadline">
+            </div>
+               <div class="form-group">
+                    <label for="status">Status</label>
+                    <select
+                      name="status"
+                      id="status"
+                      class="form-control"
+                      required
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Ongoing">Ongoing</option>
+                      <option value="Closed">Closed</option>
+                      <option value="Awaiting">Awaiting</option>
+                    </select>
+                  </div>
+            <div class="form-group">
+              <label for="link">Link:</label>
+              <input type="url" class="form-control" id="link" name="link">
+            </div>
+            <div class="form-group">
+              <label for="remarks">Remarks:</label>
+              <textarea class="form-control" id="remarks" name="remarks"></textarea>
+            </div>
+            <div class="form-group">
+    <label for="medium">Medium:</label>
+    <select name="medium" id="medium" class="form-control" required>
+        <option value="">Select Medium</option>
+        <option value="Unstop" {% if application.medium == 'Unstop' %} selected {% endif %}>Unstop</option>
+        <option value="Glassdoor" {% if application.medium == 'Glassdoor' %} selected {% endif %}>Glassdoor</option>
+        <option value="Linkedin" {% if application.medium == 'Linkedin' %} selected {% endif %}>LinkedIn</option>
+        <option value="Google" {% if application.medium == 'Google' %} selected {% endif %}>Google</option>
+        <option value="Own Website" {% if application.medium == 'Own Website' %} selected {% endif %}>Own Website</option>
+        <option value="Google Form" {% if application.medium == 'Google Form' %} selected {% endif %}>Google Forms</option>
+        <option value="Others" {% if application.medium == 'Others' %} selected {% endif %}>Others</option>
+    </select>
+</div>
+
+            <!-- <div class="form-group">
+              <label for="posted_on">Posted On:</label>
+              <input type="datetime-local" class="form-control" id="posted_on" name="posted_on" value="{{ timezone.now }}">
+            </div> -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Company</th>
+        <th scope="col">Role</th>
+        <th scope="col">Deadline</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop through each application and display -->
+      {% for application in applications %}
+      <tr>
+        <td>{{ application.company }}</td>
+        <td>{{ application.role }}</td>
+        <td>{{ application.deadline }}</td>
+        <td>{{ application.status }}</td>
+        <td>
+          <!-- Button trigger modal for editing application -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ application.s_no }}">
+            Edit
+          </button>
+          <!-- Button trigger modal for deleting application -->
+          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ application.s_no }}">
+            Delete
+          </button>
+        </td>
+      </tr>
+      <!-- Modal for editing application -->
+      <div class="modal fade" id="editModal{{ application.s_no }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ application.s_no }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ application.s_no }}">Edit Application</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" action="{% url 'edit_application' application.s_no %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="company">Company:</label>
+                  <input type="text" class="form-control" id="company" name="company" value="{{ application.company }}">
+                </div>
+                <div class="form-group">
+                  <label for="role">Role:</label>
+                  <input type="text" class="form-control" id="role" name="role" value="{{ application.role }}">
+                </div>
+               <div class="form-group">
+    <label for="deadline">Deadline:</label>
+    <input type="date" class="form-control" id="deadline" name="deadline" value="{{ application.deadline|date:'Y-m-d' }}">
+</div>
+
+              
+               <div class="form-group">
+    <label for="status">Status</label>
+    <select name="status" id="status" class="form-control" required>
+        <option value="">Select Status</option>
+        <option value="Ongoing" {% if application.status == 'Ongoing' %} selected {% endif %}>Ongoing</option>
+        <option value="Closed" {% if application.status == 'Closed' %} selected {% endif %}>Closed</option>
+        <option value="Awaiting" {% if application.status == 'Awaiting' %} selected {% endif %}>Awaiting</option>
+        <!-- Add other status options here -->
+    </select>
+</div>
+
+                <div class="form-group">
+                  <label for="link">Link:</label>
+                  <input type="url" class="form-control" id="link" name="link" value="{{ application.link }}">
+                </div>
+                <div class="form-group">
+                  <label for="remarks">Remarks:</label>
+                  <textarea class="form-control" id="remarks" name="remarks">{{ application.remarks }}</textarea>
+                </div>
+               <div class="form-group">
+    <label for="medium">Medium:</label>
+    <select name="medium" id="medium" class="form-control" required>
+        <option value="">Select Medium</option>
+        <option value="Unstop" {% if application.medium == 'Unstop' %} selected {% endif %}>Unstop</option>
+        <option value="Glassdoor" {% if application.medium == 'Glassdoor' %} selected {% endif %}>Glassdoor</option>
+        <option value="Linkedin" {% if application.medium == 'Linkedin' %} selected {% endif %}>LinkedIn</option>
+        <option value="Google" {% if application.medium == 'Google' %} selected {% endif %}>Google</option>
+        <option value="Own Website" {% if application.medium == 'Own Website' %} selected {% endif %}>Own Website</option>
+        <option value="Google Form" {% if application.medium == 'Google Form' %} selected {% endif %}>Google Forms</option>
+        <option value="Others" {% if application.medium == 'Others' %} selected {% endif %}>Others</option>
+    </select>
+</div>
+
+             
+                <button type="submit" class="btn btn-primary">Update</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal for confirming deletion -->
+      <div class="modal fade" id="deleteModal{{ application.s_no }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ application.s_no }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ application.s_no }}">Confirm Deletion</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this application?
+            </div>
+            <div class="modal-footer">
+              <form method="POST" action="{% url 'delete_application' application.s_no %}">
+                {% csrf_token %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% include 'footer.html' %}
+{% endblock %}
+
