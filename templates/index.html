@@ -152,22 +152,26 @@
 <div class="container mt-5">
     <div class="row">
         {% for job_application in job_applications %}
-        <div class="col-md-4 mb-4">
+        <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">{{ job_application.company }}</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>Role:</strong> {{ job_application.role }}</p>
-                    <p><strong>Deadline:</strong> {{ job_application.deadline }}</p>
-                    <p><strong>Status:</strong> {{ job_application.status }}</p>
+                    {% if job_application.deadline < today %}
+                        <p><strong>Status:</strong> Deadline Exceeded</p>
+                    {% else %}
+                        <p><strong>Status:</strong> {{ job_application.status }}</p>
+                    {% endif %}
+                     <p><strong>Deadline:</strong> {{ job_application.deadline }}</p>
                     <p><strong>Medium:</strong> {{ job_application.medium }}</p>
                     <p><strong>Remarks:</strong> {{ job_application.remarks }}</p>
                     {% if user.is_authenticated %}
                     <a href="{{ job_application.link }}" class="btn btn-primary" target="_blank">Apply Now</a>
-                {% else %}
+                    {% else %}
                     <a href="{% url 'login' %}" class="btn btn-primary">Login to Apply</a>
-                {% endif %}
+                    {% endif %}
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">Posted on: {{ job_application.posted_on }}</small>
@@ -179,6 +183,7 @@
         {% endfor %}
     </div>
 </div>
+
 
 {% include 'footer.html' %}
 {% endblock %}

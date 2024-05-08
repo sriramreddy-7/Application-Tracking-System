@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from jobs.models import JobApplication, EmailSubscription, UserJobApplication
+from jobs.models import JobApplication, EmailSubscription, UserJobApplication,RecommendedWebsite
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from datetime import datetime
 
 def test(request):
     job_applications = JobApplication.objects.all()
@@ -40,6 +40,14 @@ def index(request):
         return redirect('index')
     else:
         job_applications = JobApplication.objects.all()
+        today = datetime.now().date()
+        for job_application in job_applications:
+            # Convert the deadline to date object
+            deadline_date = job_application.deadline.date()
+            if deadline_date < today:
+                job_application.status = "Deadline Exceeded"
+                job_application.save()
+
         return render(request, 'index.html', {'job_applications': job_applications})
 
 def login_view(request):
@@ -98,9 +106,12 @@ def my_applications(request):
 
 
 @login_required
+# def resume_tips(request):
+#     return render(request,'resume_tips.html')
+@login_required 
 def resume_tips(request):
-    return render(request,'resume_tips.html')
-
+    recommended_websites = RecommendedWebsite.objects.all()
+    return render(request, 'resume_tips.html', {'recommended_websites': recommended_websites})
 
 
 def subscribe_newsletter(request):

@@ -32,3 +32,13 @@ class UserJobApplication(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Application for {self.job_application.company}"
+
+
+
+class RecommendedWebsite(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    url = models.URLField()
+
+    def __str__(self):
+        return self.name
