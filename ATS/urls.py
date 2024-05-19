@@ -17,10 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from jobs import views
+from django.conf import settings
+# from django.views.static import serve as static_serve
+# from django.views.generic import RedirectView
+# from django.urls import re_path
+# from django.conf.urls.static import static
 
+from jobs.views import AdsTxtView
 
 
 urlpatterns = [
+    path('ads.txt', views.AdsTxtView.as_view(), name='ads.txt'),
+    
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('subscribe-newsletter/', views.subscribe_newsletter, name='subscribe_newsletter'),
@@ -49,4 +57,12 @@ urlpatterns = [
     path('delete-job-application/<int:user_job_application_id>/', views.delete_job_application, name='delete_job_application'),
 ]
     
+# urlpatterns += [
+#     # re_path(r'^ads\.txt$', static_serve, {'path': 'ads.txt', 'document_root': settings.STATIC_ROOT}),
+#     re_path(r'^ads\.txt$', views.ads_txt),
+# ]
+
+# if settings.DEBUG:
+#     from django.conf.urls.static import static
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

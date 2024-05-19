@@ -12,6 +12,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
+from .ads import AdsTxtView
+from django.http import HttpResponse
+from django.conf import settings
+import os
+
+def ads_txt(request):
+    ads_txt_path = os.path.join(settings.STATIC_ROOT, 'ads.txt')
+    with open(ads_txt_path, 'r') as file:
+        content = file.read()
+    return HttpResponse(content, content_type='text/plain')
+
+
 def test(request):
     job_applications = JobApplication.objects.all()
     return render(request, 'index.html', {'job_applications': job_applications})
